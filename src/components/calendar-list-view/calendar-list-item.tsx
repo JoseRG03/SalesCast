@@ -13,14 +13,17 @@ export default function CalendarListItem(props: CalendarListItemProps) {
     {
       client: "Cliente X",
       cost: 56000,
+      orderId: 1,
     },
     {
       client: "Cliente Y",
       cost: 56000,
+      orderId: 2,
     },
     {
       client: "Cliente Z",
       cost: 56000,
+      orderId: 3,
     },
   ];
 
@@ -30,8 +33,13 @@ export default function CalendarListItem(props: CalendarListItemProps) {
         <h2 className="text-2xl mb-3">{date}</h2>
       </section>
       <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 w-full">
-        {salesPerDay.map(({ client, cost }, key) => (
-          <CalendarListDateCard key={key} client={client} cost={cost} />
+        {salesPerDay.map(({ client, cost, orderId }, _) => (
+          <CalendarListDateCard
+            key={orderId}
+            client={client}
+            cost={cost}
+            orderId={orderId}
+          />
         ))}
       </section>
     </section>
