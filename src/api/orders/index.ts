@@ -2,6 +2,7 @@ import { AxiosResponse } from "axios";
 import toast from "react-hot-toast";
 
 import customAxios from "@/global-config/axios";
+import { OrderItem } from "@/types";
 
 export type GenericResponse<G> = {
   data: G;
@@ -76,4 +77,21 @@ export async function getFuturePurchaseCalendar(): Promise<GroupedDate[]> {
   );
 
   return groupedOrders;
+}
+
+
+export type SendOCRequest = {
+  item_list: Array<OrderItem>;
+  client_id: string;
+  subtotal: number;
+}
+
+export async function sendPurchase(data: SendOCRequest) {
+  const jwt = localStorage.getItem("jwt");
+
+  const response = await customAxios.post('orders', data, {
+    headers: { Authorization: `Bearer ${jwt}` },
+  });
+ 
+  return response;
 }

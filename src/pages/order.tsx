@@ -5,45 +5,47 @@ import { useParams } from "react-router-dom";
 import { Trash2 } from "lucide-react";
 import { Link } from "@heroui/link";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
 
 import AppLayout from "@/layouts/app";
 import { CustomTableRowProps, OrderItem } from "@/types";
 import { getProductList } from "@/api/products";
 import AddRowSelect from "@/components/add-row-select";
 import { formatNumber } from "@/utils/functions";
+import { SendOCRequest, sendPurchase } from "@/api/orders";
 
 const ITEMS: OrderItem[] = [
   {
     product_id: 1,
-    product_name: "Item X",
+    product_name: "smart watch",
     items_per_unit: 8,
     quantity: 50,
     unit_price: 300,
   },
   {
     product_id: 2,
-    product_name: "Item Y",
+    product_name: "gaming console",
     quantity: 35,
     items_per_unit: 9,
     unit_price: 300,
   },
   {
     product_id: 3,
-    product_name: "Item Z",
+    product_name: "tablet",
     quantity: 50,
     items_per_unit: 10,
     unit_price: 300,
   },
   {
     product_id: 4,
-    product_name: "Item A",
+    product_name: "smart TV",
     quantity: 20,
     items_per_unit: 11,
     unit_price: 300,
   },
   {
     product_id: 5,
-    product_name: "Item B",
+    product_name: "drone",
     quantity: 40,
     items_per_unit: 12,
     unit_price: 300,
@@ -69,7 +71,7 @@ export default function OrderPage() {
 
   const [itemList, setItemList] = useState<Array<OrderItem>>(ITEMS);
   const [totalCost, setTotalCost] = useState<number>(0);
-  const [addingItem, setAddingItem] = useState(true);
+  const [addingItem, setAddingItem] = useState(false);
 
   useEffect(() => {
     const sum = itemList.reduce(
@@ -110,8 +112,22 @@ export default function OrderPage() {
     ]);
   };
 
-  const handleOCCreate = () => {
-    print();
+  const handleOCCreate = async () => {
+    const payload: SendOCRequest = {
+      item_list: itemList,
+      client_id: orderId || "0",
+      subtotal: totalCost,
+    };
+
+    await toast.promise(() => sendPurchase(payload), {
+      success: () => {
+        print();
+
+        return "Éxito!";
+      },
+      loading: "Cargando...",
+      error: "Ha ocurrido un error",
+    });
   };
 
   const renderItems = useMemo(() => {

@@ -17,7 +17,7 @@ export default function AddRowSelect({ options, onSend }: AddRowSelectProps) {
   const [value, setValue] = useState<string>();
 
   return (
-    <section className="flex gap-8">
+    <section className="flex gap-8 print:hidden">
       <Select
         variant="bordered"
         onChange={(event) => setValue(event.target.value)}
