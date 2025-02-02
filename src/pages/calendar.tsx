@@ -1,22 +1,27 @@
+import { useQuery } from "@tanstack/react-query";
+import { Spinner } from "@heroui/spinner";
+
 import CalendarListItem from "@/components/calendar-list-view/calendar-list-item";
 import AppLayout from "@/layouts/app";
-import { formatISOToCustomDate } from "@/utils/functions";
+import { getFuturePurchaseCalendar } from "@/api/orders";
 
 export default function CalendarPage() {
-  const listItems = [
-    {
-      date: new Date().toISOString(),
-    },
-    {
-      date: new Date(2025, 4, 26).toISOString(),
-    },
-  ];
+  const { data, isLoading } = useQuery({
+    queryKey: ["get-future-purchases"],
+    queryFn: getFuturePurchaseCalendar,
+  });
 
   return (
     <AppLayout titleText="Posibles Compras Futuras">
-      {listItems.map(({ date }, key) => (
-        <CalendarListItem key={key} date={formatISOToCustomDate(date)} />
-      ))}
+      {isLoading ? (
+        <section className="w-full h-full flex">
+          <Spinner className="m-auto" size="lg" />
+        </section>
+      ) : (
+        (data ?? []).map(({ date, dateList }, key) => (
+          <CalendarListItem key={key} date={date} items={dateList} />
+        ))
+      )}
     </AppLayout>
   );
 }

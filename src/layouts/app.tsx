@@ -26,7 +26,7 @@ export default function AppLayout({
           href="https://heroui.com"
           title="heroui.com homepage"
         >
-          <span className="text-default-600">Powered by</span>
+          <span className="text-default-600 print:hidden">Powered by</span>
           <p className="text-primary print:hidden">HeroUI</p>
         </Link>
       </footer>

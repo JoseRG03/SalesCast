@@ -3,10 +3,9 @@ import { Input } from "@heroui/input";
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Trash2 } from "lucide-react";
+
 import AppLayout from "@/layouts/app";
 import { CustomTableRowProps, OrderItem } from "@/types";
-
-const TABLE_COLUMNS = 5;
 
 const ITEMS: OrderItem[] = [
   {
@@ -59,6 +58,8 @@ export function CustomTableRow({
 }
 
 export default function OrderPage() {
+  const TABLE_COLUMNS = 5;
+
   const { orderId } = useParams<{ orderId: string }>();
 
   const [itemList, setItemList] = useState<Array<OrderItem>>(ITEMS);
@@ -90,23 +91,27 @@ export default function OrderPage() {
         index,
       ) => (
         <CustomTableRow key={product_id} columns={TABLE_COLUMNS}>
-          <p className="text-lg text-start ml-4">{product_name}</p>
+          <p className="text-small md:text-lg text-start ml-4">
+            {product_name}
+          </p>
           <Input
+            size="sm"
             value={quantity.toString()}
             variant="bordered"
             onChange={(event) =>
               handleItemValueChange(index, event.target.value)
             }
           />
-          <h2 className="text-lg">{items_per_unit}</h2>
+          <h2 className="text-small md:text-lg">{items_per_unit}</h2>
           <Button
             className="mx-auto print:hidden"
             color="danger"
+            size="sm"
             onPress={handleItemRemove(index)}
           >
             <Trash2 />
           </Button>
-          <p className="text-lg">{unit_price * quantity}</p>
+          <p className="text-small md:text-lg">{unit_price * quantity}</p>
         </CustomTableRow>
       ),
     );
@@ -123,11 +128,13 @@ export default function OrderPage() {
 
       <table className="flex flex-col text-center mt-8">
         <CustomTableRow className="border-b-1" columns={TABLE_COLUMNS}>
-          <h2 className="text-xl font-bold">Producto</h2>
-          <h2 className="text-xl font-bold">Cantidad</h2>
-          <h2 className="text-xl font-bold">Items por Unidad</h2>
-          <h2 className="text-xl font-bold print:hidden">Eliminar</h2>
-          <h2 className="text-xl font-bold">Precio total</h2>
+          <h2 className="text-small md:text-xl font-bold">Producto</h2>
+          <h2 className="text-small md:text-xl font-bold">Cantidad</h2>
+          <h2 className="text-small md:text-xl font-bold">Items por Unidad</h2>
+          <h2 className="text-small md:text-xl font-bold print:hidden">
+            Eliminar
+          </h2>
+          <h2 className="text-small md:text-xl font-bold">Precio total</h2>
         </CustomTableRow>
         {renderItems}
       </table>
@@ -156,7 +163,7 @@ export default function OrderPage() {
           radius="full"
           onPress={handleOCCreate}
         >
-          <p>Generar Orden de Compra</p>
+          <p>Registrar Orden de Compra</p>
         </Button>
       </span>
     </AppLayout>

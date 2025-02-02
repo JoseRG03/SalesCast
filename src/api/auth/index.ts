@@ -7,9 +7,9 @@ export const LogIn = async (body: LoginFormRequest) => {
     ...body,
     clientId: 1,
   });
-  const jwt = response.data.data.jwt;
+  const jwt = response.data.data.token;
 
   localStorage.setItem("jwt", jwt);
-  
+
   return response;
 };

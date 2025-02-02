@@ -20,3 +20,11 @@ export function formatISOToCustomDate(isoString: string) {
 
   return `${day} de ${month} del ${year}`;
 }
+
+export function formatNumber(num: number) {
+  let [integer, decimal] = num.toFixed(2).split(".");
+
+  integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  return `${integer}.${decimal}`;
+}

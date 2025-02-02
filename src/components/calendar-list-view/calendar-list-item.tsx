@@ -1,31 +1,15 @@
-import CalendarListDateCard, {
-} from "@/components/calendar-list-view/calendar-list-date-card";
-import { CalendarListDateCardProps } from "@/types";
+import { FutureOrder } from "@/api/orders";
+import CalendarListDateCard from "@/components/calendar-list-view/calendar-list-date-card";
 
 type CalendarListItemProps = {
   date: string;
+  items: FutureOrder[];
 };
 
 export default function CalendarListItem(props: CalendarListItemProps) {
-  const { date } = props;
+  const { date, items } = props;
 
-  const salesPerDay: CalendarListDateCardProps[] = [
-    {
-      client: "Cliente X",
-      cost: 56000,
-      orderId: 1,
-    },
-    {
-      client: "Cliente Y",
-      cost: 56000,
-      orderId: 2,
-    },
-    {
-      client: "Cliente Z",
-      cost: 56000,
-      orderId: 3,
-    },
-  ];
+  const mappedItems = items.map((item) => item.proposal);
 
   return (
     <section className="flex flex-col gap-4 py-8 md:py-10">
@@ -33,12 +17,12 @@ export default function CalendarListItem(props: CalendarListItemProps) {
         <h2 className="text-2xl mb-3">{date}</h2>
       </section>
       <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 w-full">
-        {salesPerDay.map(({ client, cost, orderId }, _) => (
+        {mappedItems.map(({ bundle_offer }, key) => (
           <CalendarListDateCard
-            key={orderId}
-            client={client}
-            cost={cost}
-            orderId={orderId}
+            key={key}
+            client={bundle_offer.name}
+            cost={bundle_offer.total_bundle_price}
+            orderId={key}
           />
         ))}
       </section>

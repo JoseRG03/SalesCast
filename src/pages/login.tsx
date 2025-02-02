@@ -58,10 +58,6 @@ export default function LoginPage() {
       const response = await LogIn(data);
 
       if (response.status === 200) {
-        const jwt = response.data?.data?.jwt;
-
-        localStorage.setItem("jwt", jwt);
-
         nav("/calendar");
       }
     } catch (error) {

@@ -3,6 +3,7 @@ import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
 import { useNavigate } from "react-router-dom";
 
 import { CalendarListDateCardProps } from "@/types";
+import { formatNumber } from "@/utils/functions";
 
 
 export default function CalendarListDateCard(props: CalendarListDateCardProps) {
@@ -20,7 +21,7 @@ export default function CalendarListDateCard(props: CalendarListDateCardProps) {
           <h1>{client}</h1>
         </CardHeader>
         <CardBody>
-          <p>Se espera vender: ${cost} USD</p>
+          <p>Se espera vender: ${formatNumber(cost)} USD</p>
         </CardBody>
         <CardFooter>
           <Button
