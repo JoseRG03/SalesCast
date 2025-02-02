@@ -2,11 +2,9 @@ import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
 import { useNavigate } from "react-router-dom";
 
-export type CalendarListDateCardProps = {
-  client: string;
-  cost: number;
-  orderId: number;
-};
+import { CalendarListDateCardProps } from "@/types";
+
+
 export default function CalendarListDateCard(props: CalendarListDateCardProps) {
   const { client, cost, orderId } = props;
   const nav = useNavigate();

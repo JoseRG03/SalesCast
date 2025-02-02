@@ -15,7 +15,7 @@ export default function AppLayout({
 
       <main className="container mx-auto max-w-7xl px-6 flex-grow pt-10">
         {titleText && (
-          <span className="text-3xl font-bold">{titleText}&nbsp;</span>
+          <span className="text-3xl font-bold print:hidden">{titleText}&nbsp;</span>
         )}
         {children}
       </main>
@@ -27,7 +27,7 @@ export default function AppLayout({
           title="heroui.com homepage"
         >
           <span className="text-default-600">Powered by</span>
-          <p className="text-primary">HeroUI</p>
+          <p className="text-primary print:hidden">HeroUI</p>
         </Link>
       </footer>
     </div>

@@ -1,6 +1,6 @@
 import CalendarListDateCard, {
-  CalendarListDateCardProps,
 } from "@/components/calendar-list-view/calendar-list-date-card";
+import { CalendarListDateCardProps } from "@/types";
 
 type CalendarListItemProps = {
   date: string;
