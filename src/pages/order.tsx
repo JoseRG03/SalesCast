@@ -1,37 +1,48 @@
-import AppLayout from "@/layouts/app";
-
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
-import { ReactNode, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Trash2 } from "lucide-react";
+import AppLayout from "@/layouts/app";
 import { CustomTableRowProps, OrderItem } from "@/types";
 
-const items: OrderItem[] = [
+const TABLE_COLUMNS = 5;
+
+const ITEMS: OrderItem[] = [
   {
-    itemId: 1,
-    itemName: "Item X",
+    product_id: 1,
+    product_name: "Item X",
+    items_per_unit: 8,
     quantity: 50,
+    unit_price: 300,
   },
   {
-    itemId: 2,
-    itemName: "Item Y",
+    product_id: 2,
+    product_name: "Item Y",
     quantity: 35,
+    items_per_unit: 9,
+    unit_price: 300,
   },
   {
-    itemId: 3,
-    itemName: "Item Z",
+    product_id: 3,
+    product_name: "Item Z",
     quantity: 50,
+    items_per_unit: 10,
+    unit_price: 300,
   },
   {
-    itemId: 4,
-    itemName: "Item A",
+    product_id: 4,
+    product_name: "Item A",
     quantity: 20,
+    items_per_unit: 11,
+    unit_price: 300,
   },
   {
-    itemId: 5,
-    itemName: "Item B",
+    product_id: 5,
+    product_name: "Item B",
     quantity: 40,
+    items_per_unit: 12,
+    unit_price: 300,
   },
 ];
 
@@ -46,13 +57,26 @@ export function CustomTableRow({
     </tr>
   );
 }
+
 export default function OrderPage() {
   const { orderId } = useParams<{ orderId: string }>();
 
-  const [itemList, setItemList] = useState<Array<OrderItem>>(items);
+  const [itemList, setItemList] = useState<Array<OrderItem>>(ITEMS);
 
   const handleItemRemove = (index: number) => () => {
     setItemList([...itemList.slice(0, index), ...itemList.slice(index + 1)]);
+  };
+
+  const handleItemValueChange = (index: number, newValue: string) => {
+    if (isNaN(parseInt(newValue || "0"))) return;
+
+    const newItem = { ...itemList[index], quantity: parseInt(newValue || "0") };
+
+    setItemList([
+      ...itemList.slice(0, index),
+      newItem,
+      ...itemList.slice(index + 1),
+    ]);
   };
 
   const handleOCCreate = () => {
@@ -60,20 +84,32 @@ export default function OrderPage() {
   };
 
   const renderItems = useMemo(() => {
-    return itemList.map(({ itemId, itemName, quantity }, index) => (
-      <CustomTableRow key={itemId} columns={4}>
-        <p className="text-lg text-start ml-4">{itemName}</p>
-        <Input defaultValue={(quantity ?? 0).toString()} variant="bordered" />
-        <Button
-          className="mx-auto print:hidden"
-          color="danger"
-          onPress={handleItemRemove(index)}
-        >
-          <Trash2 />
-        </Button>
-        <p className="text-lg ml-4">$5,400.00</p>
-      </CustomTableRow>
-    ));
+    return itemList.map(
+      (
+        { product_id, product_name, quantity, items_per_unit, unit_price },
+        index,
+      ) => (
+        <CustomTableRow key={product_id} columns={TABLE_COLUMNS}>
+          <p className="text-lg text-start ml-4">{product_name}</p>
+          <Input
+            value={quantity.toString()}
+            variant="bordered"
+            onChange={(event) =>
+              handleItemValueChange(index, event.target.value)
+            }
+          />
+          <h2 className="text-lg">{items_per_unit}</h2>
+          <Button
+            className="mx-auto print:hidden"
+            color="danger"
+            onPress={handleItemRemove(index)}
+          >
+            <Trash2 />
+          </Button>
+          <p className="text-lg">{unit_price * quantity}</p>
+        </CustomTableRow>
+      ),
+    );
   }, [itemList]);
 
   return (
@@ -86,14 +122,28 @@ export default function OrderPage() {
       <p className="mt-4">Fecha: 02/02/2025</p>
 
       <table className="flex flex-col text-center mt-8">
-        <CustomTableRow className="border-b-1" columns={4}>
+        <CustomTableRow className="border-b-1" columns={TABLE_COLUMNS}>
           <h2 className="text-xl font-bold">Producto</h2>
           <h2 className="text-xl font-bold">Cantidad</h2>
+          <h2 className="text-xl font-bold">Items por Unidad</h2>
           <h2 className="text-xl font-bold print:hidden">Eliminar</h2>
           <h2 className="text-xl font-bold">Precio total</h2>
         </CustomTableRow>
         {renderItems}
       </table>
+
+      <div className="my-2 w-full flex justify-between">
+        <span className="text-3xl font-bold">Subtotal: </span>
+        <span className="text-3xl">$9.99</span>
+      </div>
+      <div className="my-2 w-full flex justify-between">
+        <span className="text-3xl font-bold">ITBIS: </span>
+        <span className="text-3xl">$9.99</span>
+      </div>
+      <div className="my-2 w-full flex justify-between">
+        <span className="text-3xl font-bold">Total: </span>
+        <span className="text-3xl">$9.99</span>
+      </div>
       <span className="print:hidden">
         <Button className="w-full my-4" color="primary" radius="full">
           <p>Agregar Item</p>

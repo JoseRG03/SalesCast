@@ -11,9 +11,11 @@ export type CustomTableRowProps = {
 };
 
 export type OrderItem = {
-  itemId: number;
-  itemName: string;
+  product_id: number;
+  product_name: string;
+  items_per_unit: number;
   quantity: number;
+  unit_price: number;
 };
 
 export type CalendarListDateCardProps = {
