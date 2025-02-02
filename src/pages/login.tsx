@@ -6,11 +6,11 @@ import { useNavigate } from "react-router-dom";
 import DefaultLayout from "@/layouts/default";
 import { title } from "@/components/primitives";
 
-export const LoginPage = () => {
+export default function LoginPage() {
   const nav = useNavigate();
 
   const handleLogin = () => {
-    nav("app/calendar");
+    nav("/calendar");
   };
 
   return (
@@ -34,4 +34,4 @@ export const LoginPage = () => {
       </section>
     </DefaultLayout>
   );
-};
+}
