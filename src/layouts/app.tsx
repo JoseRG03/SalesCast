@@ -2,6 +2,10 @@ import { Link } from "@heroui/link";
 import { ReactNode } from "react";
 
 import { Navbar } from "@/components/navbar";
+import { siteConfig } from "@/config/site";
+import { NavbarItem } from "@heroui/navbar";
+import clsx from "clsx";
+import { link as linkStyles } from "@heroui/theme";
 
 export default function AppLayout({
   children,
@@ -12,9 +16,25 @@ export default function AppLayout({
   titleText?: String;
   trailingContent?: ReactNode;
 }) {
+
+  const navBarItems = siteConfig.appItems.map((item) => (
+    <NavbarItem key={item.href}>
+      <Link
+        className={clsx(
+          linkStyles({ color: "foreground" }),
+          "data-[active=true]:text-primary data-[active=true]:font-medium",
+        )}
+        color="foreground"
+        href={item.href}
+      >
+        {item.label}
+      </Link>
+    </NavbarItem>
+  ));
+
   return (
     <div className="relative flex flex-col h-screen">
-      <Navbar />
+      <Navbar items={navBarItems}/>
 
       <main className="container mx-auto max-w-7xl px-6 flex-grow pt-10">
         <section className="flex justify-between">

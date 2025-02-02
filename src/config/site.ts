@@ -9,6 +9,20 @@ export const siteConfig = {
       href: "/",
     },
   ],
+  appItems: [
+    {
+      label: "Calendario Futuro",
+      href: "/calendar",
+    },
+    {
+      label: "Ordenes Previas",
+      href: "/history",
+    },
+    {
+      label: "Cerrar Sesión",
+      href: "/",
+    },
+  ],
   links: {
     github: "https://github.com/JoseRG03/SalesCast",
     login: "/login",
