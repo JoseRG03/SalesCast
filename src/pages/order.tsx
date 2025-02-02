@@ -1,11 +1,16 @@
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Trash2 } from "lucide-react";
+import { Link } from "@heroui/link";
+import { useQuery } from "@tanstack/react-query";
 
 import AppLayout from "@/layouts/app";
 import { CustomTableRowProps, OrderItem } from "@/types";
+import { getProductList } from "@/api/products";
+import AddRowSelect from "@/components/add-row-select";
+import { formatNumber } from "@/utils/functions";
 
 const ITEMS: OrderItem[] = [
   {
@@ -63,6 +68,31 @@ export default function OrderPage() {
   const { orderId } = useParams<{ orderId: string }>();
 
   const [itemList, setItemList] = useState<Array<OrderItem>>(ITEMS);
+  const [totalCost, setTotalCost] = useState<number>(0);
+  const [addingItem, setAddingItem] = useState(true);
+
+  useEffect(() => {
+    const sum = itemList.reduce(
+      (sum, currentItemValue) =>
+        sum + currentItemValue.quantity * currentItemValue.unit_price,
+      0,
+    );
+
+    setTotalCost(sum);
+  }, [itemList]);
+  const { data } = useQuery({
+    queryKey: ["get-products"],
+    queryFn: getProductList,
+  });
+
+  const mappedData = useCallback(() => {
+    return (
+      data?.map((product) => ({
+        key: product.product_id,
+        label: product.product_name,
+      })) || []
+    );
+  }, [data]);
 
   const handleItemRemove = (index: number) => () => {
     setItemList([...itemList.slice(0, index), ...itemList.slice(index + 1)]);
@@ -111,14 +141,42 @@ export default function OrderPage() {
           >
             <Trash2 />
           </Button>
-          <p className="text-small md:text-lg">{unit_price * quantity}</p>
+          <p className="text-small md:text-lg">
+            ${formatNumber(unit_price * quantity)} USD
+          </p>
         </CustomTableRow>
       ),
     );
   }, [itemList]);
 
+  function handleAddProduct(value?: string): void {
+    if (!value) return;
+
+    const itemFromData = data?.find(
+      (product) => product.product_id.toString() === value,
+    );
+
+    if (!itemFromData) return;
+
+    const newItem = {
+      ...itemFromData,
+      quantity: 0,
+      unit_price: itemFromData.product_unit_price,
+    };
+
+    setItemList([...itemList, newItem]);
+    setAddingItem(false);
+  }
+
   return (
-    <AppLayout titleText="Generar Orden de Compra">
+    <AppLayout
+      titleText="Generar Orden de Compra"
+      trailingContent={
+        <Link className="hover:underline cursor-pointer" href="/calendar">
+          Volver
+        </Link>
+      }
+    >
       <p className="my-4 print:hidden">
         En base al historial del cliente, te generamos la siguiente propuesta de
         orden de compra:
@@ -137,22 +195,35 @@ export default function OrderPage() {
           <h2 className="text-small md:text-xl font-bold">Precio total</h2>
         </CustomTableRow>
         {renderItems}
+        {addingItem && (
+          <AddRowSelect
+            options={mappedData()}
+            onSend={(value) => handleAddProduct(value)}
+          />
+        )}
       </table>
 
       <div className="my-2 w-full flex justify-between">
         <span className="text-3xl font-bold">Subtotal: </span>
-        <span className="text-3xl">$9.99</span>
+        <span className="text-3xl">${formatNumber(totalCost)} USD</span>
       </div>
       <div className="my-2 w-full flex justify-between">
-        <span className="text-3xl font-bold">ITBIS: </span>
-        <span className="text-3xl">$9.99</span>
+        <span className="text-3xl font-bold">Impuestos: </span>
+        <span className="text-3xl">${formatNumber(totalCost * 0.18)} USD</span>
       </div>
       <div className="my-2 w-full flex justify-between">
         <span className="text-3xl font-bold">Total: </span>
-        <span className="text-3xl">$9.99</span>
+        <span className="text-3xl">
+          ${formatNumber(totalCost + totalCost * 0.18)} USD
+        </span>
       </div>
       <span className="print:hidden">
-        <Button className="w-full my-4" color="primary" radius="full">
+        <Button
+          className="w-full my-4"
+          color="primary"
+          radius="full"
+          onPress={() => setAddingItem(true)}
+        >
           <p>Agregar Item</p>
         </Button>
       </span>
